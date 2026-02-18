@@ -1,18 +1,28 @@
 package com.moon.project_two.Controller;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.moon.project_two.DTO.DoctorResponseDto;
+import com.moon.project_two.DTO.ExtrnalApiResponse.LabReportResponse;
 import com.moon.project_two.DTO.AssignHeadDoctorToDepartmentDto;
 
 import com.moon.project_two.DTO.DepartmentDto;
@@ -25,6 +35,7 @@ import com.moon.project_two.Service.DepartmentService;
 import com.moon.project_two.Service.DoctorService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
@@ -36,6 +47,8 @@ public class AdminController {
     
     private final DoctorService doctorService;  
     private final DepartmentService departmentService;
+    @Qualifier("labReportRestTemplate")
+    private final RestTemplate restTemplate;
 
     //create a doctor 
     @PostMapping("/doctors")
@@ -46,6 +59,15 @@ public class AdminController {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(addDoctorResponseDto); 
     }    
+
+    //Patch a doctors 
+    @PatchMapping("/doctors")
+    public ResponseEntity<DoctorResponseDto> patchDoctor(@Validated(OnUpdate.class) @RequestBody DoctorDto patchDoctorDto){
+
+        DoctorResponseDto addDoctorResponseDto = doctorService.patchDoctor(patchDoctorDto);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(addDoctorResponseDto); 
+    } 
 
     //create a department
     @PostMapping("/departments")
@@ -76,19 +98,37 @@ public class AdminController {
     @DeleteMapping("/doctors/{id}")
     public ResponseEntity<Void> deleteDoctor(@NotNull @PathVariable Long id){
         
-        doctorService.deleteDoctor(id);
-        
+        doctorService.deleteDoctor(id);       
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
+    //Calling External API - to get lab report
+    @GetMapping("/reports/{name}/{email}")
+    public ResponseEntity<LabReportResponse> getReportforPatientByNameAndEmail(@PathVariable String name, @PathVariable @NotBlank String email){
+            
+        String url = UriComponentsBuilder
+            .fromPath("/{name}/{email}")
+            .build()
+            .toUriString();
 
-    //Patch a doctors 
-    @PatchMapping("/doctors")
-    public ResponseEntity<DoctorResponseDto> patchDoctor(@Validated(OnUpdate.class) @RequestBody DoctorDto patchDoctorDto){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+         
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-        DoctorResponseDto addDoctorResponseDto = doctorService.patchDoctor(patchDoctorDto);
+        Map<String, Object> uriVariables = Map.of("name", name, "email", email);
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(addDoctorResponseDto); 
-    } 
+        ResponseEntity<LabReportResponse> response = 
+                        restTemplate.exchange(url, 
+                        HttpMethod.GET, 
+                        entity, 
+                        LabReportResponse.class, 
+                        uriVariables);
+
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response.getBody());
+    }
+
 
 }
