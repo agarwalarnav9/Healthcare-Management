@@ -18,8 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,10 +26,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
-@AllArgsConstructor
-
 public class Patient {
     
     @Id
@@ -60,7 +55,7 @@ public class Patient {
     @OneToMany(
         mappedBy = "patient",
         cascade = {CascadeType.REMOVE}, 
-        // orphanRemoval = true, 
+        orphanRemoval = true, 
         fetch = FetchType.LAZY
     )
     @ToString.Exclude

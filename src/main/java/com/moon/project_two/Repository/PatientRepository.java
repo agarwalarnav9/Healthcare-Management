@@ -1,6 +1,7 @@
 package com.moon.project_two.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long>{
    @Query("SELECT DISTINCT p from Patient p LEFT JOIN FETCH p.insurance LEFT JOIN FETCH p.appointments") 
    List<Patient> findAllWithInsuranceAndAppointment(); 
    
-   
+   Optional<Patient> findByName(String name);  
 }

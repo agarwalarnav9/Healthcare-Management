@@ -19,7 +19,7 @@ public class DepartmentDto {
     @NotNull(groups = OnCreate.class)
     private String departmentName;
 
-    private Long headDoctor_id;
+    private Long headDoctorId;
 
 
 }

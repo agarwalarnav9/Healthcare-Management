@@ -33,6 +33,7 @@ import com.moon.project_two.DTO.ValidationGroups.OnCreate;
 import com.moon.project_two.DTO.ValidationGroups.OnUpdate;
 import com.moon.project_two.Service.DepartmentService;
 import com.moon.project_two.Service.DoctorService;
+import com.moon.project_two.Service.ExternalService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -47,9 +48,8 @@ public class AdminController {
     
     private final DoctorService doctorService;  
     private final DepartmentService departmentService;
-    @Qualifier("labReportRestTemplate")
-    private final RestTemplate restTemplate;
-
+    private final ExternalService externalService;
+  
     //create a doctor 
     @PostMapping("/doctors")
     public ResponseEntity<DoctorResponseDto> createDoctor(
@@ -106,28 +106,8 @@ public class AdminController {
     @GetMapping("/reports/{name}/{email}")
     public ResponseEntity<LabReportResponse> getReportforPatientByNameAndEmail(@PathVariable String name, @PathVariable @NotBlank String email){
             
-        String url = UriComponentsBuilder
-            .fromPath("/{name}/{email}")
-            .build()
-            .toUriString();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-         
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        Map<String, Object> uriVariables = Map.of("name", name, "email", email);
+        return ResponseEntity.status(HttpStatus.OK).body(externalService.getReportforPatientByNameAndEmail(name, email));
         
-        ResponseEntity<LabReportResponse> response = 
-                        restTemplate.exchange(url, 
-                        HttpMethod.GET, 
-                        entity, 
-                        LabReportResponse.class, 
-                        uriVariables);
-
-        return ResponseEntity
-                .status(response.getStatusCode())
-                .body(response.getBody());
     }
 
 

@@ -12,16 +12,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class Insurance {
     
     @Id
@@ -41,8 +40,7 @@ public class Insurance {
     private LocalDateTime createdAt;
 
     @OneToOne
-    @JoinColumn(nullable = false)
-    @ToString.Exclude
+    @JoinColumn( unique = true)
     private Patient patient;
 
 }

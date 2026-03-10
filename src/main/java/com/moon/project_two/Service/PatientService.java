@@ -20,22 +20,36 @@ public class PatientService {
    
     private final PatientRepository patientRepository;
 
-
+    @Transactional
     public Patient addNewPatient(Patient patientDto){
-        
         Patient patient = patientRepository.save(patientDto);
-        
         return patient;
+    }
+
+    @Transactional
+    public Patient addNewPatientwithInsurance(Patient patientDto, Insurance insurance){
+        
+        patientDto.setInsurance(insurance);
+        insurance.setPatient(patientDto);
+
+        return patientRepository.save(patientDto);
+        
     }
 
     @Transactional
     public Patient addInsuranceToExistingPatient(Long id, Insurance insurance){
         
+        //runs immediately, put patient to persistant context
         Patient patient = patientRepository.findById(id).orElseThrow();
         
+        //insurance is in transient context
         insurance.setPatient(patient);
-        patient.setInsurance(insurance);      
         
+        //patient is dirtied 
+        patient.setInsurance(insurance); 
+        
+        
+        //at transaction commit, patient is dirtied, cascading detection triggers, saves insurance
 
         return patient;
     }

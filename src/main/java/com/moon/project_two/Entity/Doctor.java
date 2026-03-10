@@ -59,7 +59,7 @@ public class Doctor {
     @ToString.Exclude
     private List<Appointment> appointments = new ArrayList<>(); 
 
-    @ManyToMany(mappedBy = "doctors", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "doctors",cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Department> departments = new ArrayList<>(); 
 
