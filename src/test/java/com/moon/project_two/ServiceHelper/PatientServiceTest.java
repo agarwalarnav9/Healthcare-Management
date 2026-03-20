@@ -1,8 +1,7 @@
-package com.moon.project_two.Service;
+package com.moon.project_two.ServiceHelper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.moon.project_two.Entity.BloodGroupType;
 import com.moon.project_two.Entity.Insurance;
 import com.moon.project_two.Entity.Patient;
-
-
+import com.moon.project_two.Service.AppointmentService;
+import com.moon.project_two.Service.PatientService;
 
 @SpringBootTest
 public class PatientServiceTest {
@@ -25,14 +24,17 @@ public class PatientServiceTest {
 
     @Test
     public void addNewPatientTest(){
-        Patient patient = Patient.builder()
-                        .name("Arnav1")
-                        .email("arnav@gmail.com")
-                        .bloodGroup(BloodGroupType.O_POSITIVE)
-                        .gender("male")
-                        .birthDate(LocalDate.of(1991, 1, 1))
-                        .build();
-        Insurance insurance = new Insurance(null,"SBI", "1234",LocalDate.of(2028,12,12), null,null);
+        Patient patient = new Patient();
+        patient.setName("Arnav1");
+        patient.setEmail("arnav@gmail.com");
+        patient.setBloodGroup(BloodGroupType.O_POSITIVE);
+        patient.setGender("male");
+        patient.setBirthDate(LocalDate.of(1991, 1, 1));
+
+        Insurance insurance = new Insurance();
+        insurance.setProvider("SBI");
+        insurance.setPolicyNumber("1234");
+        insurance.setValidity(LocalDate.of(2028,12,12));
         
         // Patient patient2 = patientService.addNewPatient(patient);
 
@@ -49,7 +51,7 @@ public class PatientServiceTest {
     //     Insurance insurance = new Insurance(null,"SBI", "1234",LocalDate.of(2028,12,12), null,null);
 
     //     patientService.addInsuranceToExistingPatient(4L, insurance);
-
+    //
     // }
 
 

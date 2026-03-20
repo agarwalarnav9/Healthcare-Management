@@ -11,7 +11,6 @@ import com.moon.project_two.DTO.DepartmentDto;
 import com.moon.project_two.DTO.DoctorDto;
 import com.moon.project_two.Entity.Department;
 import com.moon.project_two.Entity.Doctor;
-import com.moon.project_two.Repository.DepartmentRepository;
 import com.moon.project_two.Repository.DoctorRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class DoctorService {
     
     private final DoctorRepository doctorRepository; 
-    private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper; 
 
     @Transactional
@@ -31,7 +29,6 @@ public class DoctorService {
         //puts the doctor in persistant context, insert query is executed
         Doctor savedDoctor = doctorRepository.save(doctor); 
         return modelMapper.map(savedDoctor, DoctorResponseDto.class);
-
     }
 
     @Transactional
