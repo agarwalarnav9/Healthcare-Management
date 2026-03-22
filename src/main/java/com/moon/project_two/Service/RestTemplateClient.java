@@ -3,7 +3,6 @@ package com.moon.project_two.Service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RestTemplateClient {
     
-    @Qualifier("restTemplateClient")
     private final RestTemplate restTemplate;
 
     public LabReportResponse getReportforPatientByNameAndEmail(String name, String email) {

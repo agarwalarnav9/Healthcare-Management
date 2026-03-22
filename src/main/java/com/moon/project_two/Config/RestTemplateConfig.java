@@ -71,7 +71,7 @@ public class RestTemplateConfig {
     }
 
     // Step 5: RestTemplate with HttpClient plugged in
-    @Bean("restTemplateClient")
+    @Bean
     public RestTemplate restTemplate(CloseableHttpClient httpClient) {
         HttpComponentsClientHttpRequestFactory factory =
             new HttpComponentsClientHttpRequestFactory(httpClient);
